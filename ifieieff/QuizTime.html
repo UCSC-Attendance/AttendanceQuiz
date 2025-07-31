@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Attendance Quiz</title>
+  <title>Attendance Quiz + Chart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     html, body {
       margin: 0;
@@ -19,27 +22,6 @@
       border: none;
       width: 100%;
       height: 100%;
-    }
-
-    #chartWrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px 0;
-      background: #f4f6f8;
-    }
-
-    #chartContainer {
-      width: 600px;
-      height: 371px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-      background: white;
-    }
-
-    #chartFrame {
-      width: 100%;
-      height: 100%;
-      border: none;
     }
 
     #toggleBtn {
@@ -58,28 +40,101 @@
       background-color: #005ea0;
     }
 
-    .fallback {
+    #chartWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+      background: #f4f6f8;
+    }
+
+    #chartContainer {
+      width: 600px;
+      height: 400px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      background: white;
       padding: 20px;
-      text-align: center;
+      border-radius: 12px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
 <body>
 
+  <!-- Embedded Quiz Page -->
   <iframe id="quizFrame" src="https://script.google.com/macros/s/AKfycbyx7yv50M2APP9CPvlIsjA9Aw-BUgz4p1ZDMnbL4ldv04nBoUZl7Uu5TqgDo2GSX5HM/exec" allowfullscreen></iframe>
 
+  <!-- Toggle Chart -->
   <button id="toggleBtn" onclick="toggleChart()">Hide Chart</button>
 
+  <!-- Chart -->
   <div id="chartWrapper">
     <div id="chartContainer">
-      <iframe id="chartFrame"
-        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&amp;format=interactive">
-      </iframe>
+      <canvas id="answerChart"></canvas>
     </div>
   </div>
 
   <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pub?gid=972297018&single=true&output=csv';
+    let chartInstance = null;
 
+    async function fetchAndRenderChart() {
+      try {
+        const response = await fetch(CSV_URL);
+        const text = await response.text();
+        const rows = text.trim().split('\n').slice(1); // skip header
+
+        const counts = {};
+        for (const row of rows) {
+          const cols = row.split(',');
+          const answer = cols[1]?.trim().replace(/^"|"$/g, '');
+          if (!answer) continue;
+          counts[answer] = (counts[answer] || 0) + 1;
+        }
+
+        drawChart(counts);
+      } catch (err) {
+        console.error('Failed to fetch chart data:', err);
+      }
+    }
+
+    function drawChart(data) {
+      const ctx = document.getElementById('answerChart').getContext('2d');
+      const labels = Object.keys(data);
+      const counts = Object.values(data);
+
+      const config = {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Responses',
+            data: counts,
+            backgroundColor: '#0078d4'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              precision: 0
+            }
+          }
+        }
+      };
+
+      if (chartInstance) {
+        chartInstance.data = config.data;
+        chartInstance.update();
+      } else {
+        chartInstance = new Chart(ctx, config);
+      }
+    }
 
     function toggleChart() {
       const wrapper = document.getElementById("chartWrapper");
@@ -93,12 +148,9 @@
         button.innerText = "Show Chart";
       }
     }
-  </script>
 
-  <noscript>
-    <div class="fallback">
-      <p>This page requires JavaScript. Please enable it to view the quiz.</p>
-    </div>
-  </noscript>
+    setInterval(fetchAndRenderChart, 5000);
+    window.onload = fetchAndRenderChart;
+  </script>
 </body>
 </html>
