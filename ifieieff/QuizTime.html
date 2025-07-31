@@ -79,13 +79,11 @@
   </div>
 
   <script>
-    function refreshChart() {
+    setInterval(() => {
       const frame = document.getElementById("chartFrame");
-      const baseSrc = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&format=interactive";
-      frame.src = baseSrc + "&t=" + new Date().getTime(); // Add timestamp to bust cache
-    }
+      frame.src = frame.src;
+    }, 5000);
 
-    setInterval(refreshChart, 5000); // Refresh every 5s
 
     function toggleChart() {
       const wrapper = document.getElementById("chartWrapper");
