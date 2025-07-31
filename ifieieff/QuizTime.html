@@ -9,38 +9,41 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
       font-family: Arial, sans-serif;
-    }
-
-    iframe {
-      border: none;
-      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     #quizFrame {
-      height: 100vh;
+      flex: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    #chartWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+      background: #f4f6f8;
     }
 
     #chartContainer {
-      position: absolute;
-      bottom: 0;
-      right: 0;
       width: 600px;
       height: 371px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
       background: white;
     }
 
     #chartFrame {
       width: 100%;
       height: 100%;
+      border: none;
     }
 
     #toggleBtn {
-      position: absolute;
-      bottom: 385px;
-      right: 10px;
+      margin: 10px auto;
       padding: 10px 16px;
       font-size: 14px;
       border: none;
@@ -48,7 +51,7 @@
       background-color: #0078d4;
       color: white;
       cursor: pointer;
-      z-index: 10;
+      display: block;
     }
 
     #toggleBtn:hover {
@@ -62,33 +65,37 @@
   </style>
 </head>
 <body>
+
   <iframe id="quizFrame" src="https://script.google.com/macros/s/AKfycbyx7yv50M2APP9CPvlIsjA9Aw-BUgz4p1ZDMnbL4ldv04nBoUZl7Uu5TqgDo2GSX5HM/exec" allowfullscreen></iframe>
 
   <button id="toggleBtn" onclick="toggleChart()">Hide Chart</button>
 
-  <div id="chartContainer">
-    <iframe id="chartFrame" seamless frameborder="0" scrolling="no"
-      src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&amp;format=interactive">
-    </iframe>
+  <div id="chartWrapper">
+    <div id="chartContainer">
+      <iframe id="chartFrame"
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&amp;format=interactive">
+      </iframe>
+    </div>
   </div>
 
   <script>
-    // Auto-refresh chart
-    setInterval(() => {
+    function refreshChart() {
       const frame = document.getElementById("chartFrame");
-      frame.src = frame.src;
-    }, 1000);
+      const baseSrc = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&format=interactive";
+      frame.src = baseSrc + "&t=" + new Date().getTime(); // Add timestamp to bust cache
+    }
 
-    // Toggle show/hide chart
+    setInterval(refreshChart, 5000); // Refresh every 5s
+
     function toggleChart() {
-      const container = document.getElementById("chartContainer");
+      const wrapper = document.getElementById("chartWrapper");
       const button = document.getElementById("toggleBtn");
 
-      if (container.style.display === "none") {
-        container.style.display = "block";
+      if (wrapper.style.display === "none") {
+        wrapper.style.display = "flex";
         button.innerText = "Hide Chart";
       } else {
-        container.style.display = "none";
+        wrapper.style.display = "none";
         button.innerText = "Show Chart";
       }
     }
