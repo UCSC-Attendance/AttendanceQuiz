@@ -79,7 +79,7 @@
   </div>
 
   <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pub?gid=972297018&single=true&output=csv';
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pub?gid=972297018&single=true&output=csv&t=${Date.now()}`';
     let chartInstance = null;
 
     async function fetchAndRenderChart() {
