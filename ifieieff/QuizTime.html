@@ -16,7 +16,43 @@
     iframe {
       border: none;
       width: 100%;
+    }
+
+    #quizFrame {
       height: 100vh;
+    }
+
+    #chartContainer {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 600px;
+      height: 371px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      background: white;
+    }
+
+    #chartFrame {
+      width: 100%;
+      height: 100%;
+    }
+
+    #toggleBtn {
+      position: absolute;
+      bottom: 385px;
+      right: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: #0078d4;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #toggleBtn:hover {
+      background-color: #005ea0;
     }
 
     .fallback {
@@ -26,14 +62,38 @@
   </style>
 </head>
 <body>
-  <iframe src="https://script.google.com/macros/s/AKfycbyx7yv50M2APP9CPvlIsjA9Aw-BUgz4p1ZDMnbL4ldv04nBoUZl7Uu5TqgDo2GSX5HM/exec" allowfullscreen></iframe>
-  <iframe id=chartFrame width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&amp;format=interactive"></iframe>
+  <iframe id="quizFrame" src="https://script.google.com/macros/s/AKfycbyx7yv50M2APP9CPvlIsjA9Aw-BUgz4p1ZDMnbL4ldv04nBoUZl7Uu5TqgDo2GSX5HM/exec" allowfullscreen></iframe>
+
+  <button id="toggleBtn" onclick="toggleChart()">Hide Chart</button>
+
+  <div id="chartContainer">
+    <iframe id="chartFrame" seamless frameborder="0" scrolling="no"
+      src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR-JfGpLxPQjldCYAYxsuhkJwy3N3r-T5nYJWhf3KnzdrVYj9sBREYXvmEbhyBMmDHiRRV5zLfx3LjE/pubchart?oid=1951267350&amp;format=interactive">
+    </iframe>
+  </div>
+
   <script>
-  setInterval(() => {
-    const frame = document.getElementById("chartFrame");
-    frame.src = frame.src; // reload for fresh data
-  }, 1000);
-</script>
+    // Auto-refresh chart
+    setInterval(() => {
+      const frame = document.getElementById("chartFrame");
+      frame.src = frame.src;
+    }, 1000);
+
+    // Toggle show/hide chart
+    function toggleChart() {
+      const container = document.getElementById("chartContainer");
+      const button = document.getElementById("toggleBtn");
+
+      if (container.style.display === "none") {
+        container.style.display = "block";
+        button.innerText = "Hide Chart";
+      } else {
+        container.style.display = "none";
+        button.innerText = "Show Chart";
+      }
+    }
+  </script>
+
   <noscript>
     <div class="fallback">
       <p>This page requires JavaScript. Please enable it to view the quiz.</p>
