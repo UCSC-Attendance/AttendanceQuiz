@@ -102,39 +102,41 @@
       }
     }
 
-    function drawChart(data) {
-      const ctx = document.getElementById('answerChart').getContext('2d');
-      const labels = Object.keys(data);
-      const counts = Object.values(data);
+function drawChart(data) {
+  const labels = Object.keys(data);
+  const counts = Object.values(data);
 
-      const config = {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Responses',
-            data: counts,
-            backgroundColor: '#0078d4'
-          }]
+  if (chartInstance) {
+    chartInstance.data.labels = labels;
+    chartInstance.data.datasets[0].data = counts;
+    chartInstance.update();
+  } else {
+    const ctx = document.getElementById('answerChart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Responses',
+          data: counts,
+          backgroundColor: '#0078d4'
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 300  // smooth transition instead of blank
         },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              precision: 0
-            }
+        scales: {
+          y: {
+            beginAtZero: true,
+            precision: 0
           }
         }
-      };
-
-      if (chartInstance) {
-        chartInstance.data = config.data;
-        chartInstance.update();
-      } else {
-        chartInstance = new Chart(ctx, config);
       }
-    }
+    });
+  }
+}
 
     function toggleChart() {
       const wrapper = document.getElementById("chartWrapper");
