@@ -72,6 +72,10 @@
     <form id="postForm" method="POST" action="QUIZ_APPS_SCRIPT_URL" style="display:none;">
       <input type="hidden" name="credential" id="cred" />
     </form>
+<code id="origin"></code>
+    <div class="footer">
+      
+    </div>
   </div>
 
   <script>
@@ -80,7 +84,7 @@
     const QUIZ_URL  = "https://script.google.com/macros/s/AKfycbyL5Ckr8ed3RHPiMoZlaTb2PSZ47HDSpjJX-z3GWHaLnzlKUL8zv-_R4D88DA9qQu-a/exec"; // <-- replace with your Apps Script /exec URL
 
     // Show current origin for debugging
-    document.getElementById("origin").textContent = window.location.origin;
+    //document.getElementById("origin").textContent = window.location.origin;
 
     // Initialize GIS and render the button
     window.onload = function () {
